@@ -31,6 +31,7 @@ function applyChanges(state, diff) {
 }
 
 function calculateDiff(newState, oldState, field_names) {
+    let diffCount = 0
     diff = {
         addedUsers: [],
         deletedUsers: [],
@@ -49,12 +50,14 @@ function calculateDiff(newState, oldState, field_names) {
         }
         // found added user
         diff.addedUsers.push(user)
+        diffCount += 1
     }
 
     // check if user were deleted
     for (let user of oldState) {
         if (!currentUserIPA_IDs.includes(user.ipa_uid)) {
             diff.deletedUsers.push(user.ipa_uid)
+            diffCount += 1
         }
     }
 
@@ -71,6 +74,7 @@ function calculateDiff(newState, oldState, field_names) {
                     "field_name": field_name,
                     "new_value": user[field_name]
                 })
+                diffCount += 1
             }
         }
         // check if group was added
@@ -80,6 +84,7 @@ function calculateDiff(newState, oldState, field_names) {
                 "ipa_uid": user.ipa_uid,
                 "group_cn": group
             })
+            diffCount += 1
         }
         // check if group was removed
         for (let group of userInLastData.groups) {
@@ -88,9 +93,10 @@ function calculateDiff(newState, oldState, field_names) {
                 "ipa_uid": userInLastData.ipa_uid,
                 "group_cn": group
             })
+            diffCount += 1
         }
     }
-    return diff
+    return {diff, diffCount}
 
 
 }
