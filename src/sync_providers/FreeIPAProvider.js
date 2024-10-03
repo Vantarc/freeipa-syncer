@@ -41,6 +41,8 @@ class FreeIPAProvider extends SyncProvider {
         }
         for (let dataChange of diff.dataChange) {
             let user = this.currentData.find(e => e.ipa_uid === dataChange.ipa_uid)
+            console.log("----")
+            console.log(user)
             if (!user) continue
             switch (dataChange.field_name) {
                 case "activated":
@@ -63,6 +65,7 @@ class FreeIPAProvider extends SyncProvider {
             if (user.activated) {
                 command = ipa.user_mod
             }
+
             let field_name_map = {
                 "lastname":"sn",
                 "givenname": "givenname",
