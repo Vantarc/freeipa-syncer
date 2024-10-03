@@ -24,7 +24,7 @@ async function sync() {
     await directus.updateCurrentState().catch(e => console.log(e))
 
     await freeipa.updateCurrentState().catch(e => console.log(e))
-    let directus_diff = directus.calculateDiff()
+    let {directus_diff,_} = directus.calculateDiff()
     
     let masterState = freeipa.getCurrentState()
     // apply changes to masterState
