@@ -37,10 +37,7 @@ async function sync() {
     let apply_directusDiff = directus.calculateDiffForNewData(masterState)
     await directus.applyDiff(apply_directusDiff.diff).catch(e => console.log(e))
 
-    await directus.updateCurrentState().catch(e => console.log(e))
     directus.safeCurrentState()
-
-    await freeipa.updateCurrentState().catch(e => console.log(e))
     freeipa.safeCurrentState()
     currentlySyncing = false
     if(apply_freeipaDiff.diffCount + apply_directusDiff.diffCount > 0 || queuedRequest){

@@ -59,6 +59,7 @@ class DirectusProvider extends SyncProvider {
             })
             await this.client.request(d.updateItem("Gatrobe_Users", user.directus_id, {"groups": groups}))
         }
+        super.applyDiff(diff)
     }
     
     async updateCurrentState() {

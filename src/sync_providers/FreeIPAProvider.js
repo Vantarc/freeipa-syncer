@@ -97,6 +97,7 @@ class FreeIPAProvider extends SyncProvider {
             let user = state.find(e => e.ipa_uid === ipa_uid)
             await this.client.request(d.updateItem("Gatrobe_Users"), user.directus_id, { "groups": user.groups + directusGroupAdds[ipa_uid] })
         }
+        super.applyDiff(diff)
     }
     async updateCurrentState() {
         // get all users

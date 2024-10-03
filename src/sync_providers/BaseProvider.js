@@ -13,7 +13,9 @@ class SyncProvider {
         return Utils.calculateDiff(newData, this.currentData, this.USER_DATA_LIST)
     }
 
-    async applyDiff(diff) { }
+    async applyDiff(diff) {
+        this.currentData = Utils.applyChanges(this.currentData, diff)
+    }
 
     getCurrentState() {
         return JSON.parse(JSON.stringify(this.currentData))
