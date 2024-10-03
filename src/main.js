@@ -4,7 +4,7 @@ const utils = require("./utils")
 const express = require('express');
 
 let currentlySyncing = false
-
+let queuedRequest = false
 const app = express();
 
 app.post('/sync', (req, res) => {
@@ -16,6 +16,7 @@ app.post('/sync', (req, res) => {
 
 async function sync() {
     if(currentlySyncing){
+        queuedRequest = true
         return
     }
     currentlySyncing = true
@@ -42,9 +43,11 @@ async function sync() {
     await freeipa.updateCurrentState().catch(e => console.log(e))
     freeipa.safeCurrentState()
     currentlySyncing = false
-    if(apply_freeipaDiff.diffCount + apply_directusDiff.diffCount > 0){
+    if(apply_freeipaDiff.diffCount + apply_directusDiff.diffCount > 0 || queuedRequest){
+        queuedRequest = false
         console.log("Finished syncing, but started new iteration because changes were made!")
         sync()
+        return 
     }
     console.log("Finished syncing")
 }
