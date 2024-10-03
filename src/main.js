@@ -24,17 +24,17 @@ async function sync() {
     await directus.updateCurrentState().catch(e => console.log(e))
 
     await freeipa.updateCurrentState().catch(e => console.log(e))
-    let {directus_diff,_} = directus.calculateDiff()
+    let directus_diff = directus.calculateDiff()
     
     let masterState = freeipa.getCurrentState()
     // apply changes to masterState
-    utils.applyChanges(masterState, directus_diff)
+    utils.applyChanges(masterState, directus_diff.diff)
 
-    let {apply_freeipaDiff, freeipa_diff_count} = freeipa.calculateDiffForNewData(masterState)
-    await freeipa.applyDiff(apply_freeipaDiff).catch(e => console.log(e))
+    let apply_freeipaDiff =  freeipa.calculateDiffForNewData(masterState)
+    await freeipa.applyDiff(apply_freeipaDiff.diff).catch(e => console.log(e))
 
-    let {apply_directusDiff, directus_diff_count} = directus.calculateDiffForNewData(masterState)
-    await directus.applyDiff(apply_directusDiff).catch(e => console.log(e))
+    let apply_directusDiff = directus.calculateDiffForNewData(masterState)
+    await directus.applyDiff(apply_directusDiff.diff).catch(e => console.log(e))
 
     await directus.updateCurrentState().catch(e => console.log(e))
     directus.safeCurrentState()
@@ -42,7 +42,7 @@ async function sync() {
     await freeipa.updateCurrentState().catch(e => console.log(e))
     freeipa.safeCurrentState()
     currentlySyncing = false
-    if(freeipa_diff_count + directus_diff_count > 0){
+    if(apply_freeipaDiff.diffCount + apply_directusDiff.diffCount > 0){
         console.log("Finished syncing, but started new iteration because changes were made!")
         sync()
     }
