@@ -41,8 +41,6 @@ class FreeIPAProvider extends SyncProvider {
         }
         for (let dataChange of diff.dataChange) {
             let user = this.currentData.find(e => e.ipa_uid === dataChange.ipa_uid)
-            console.log("----")
-            console.log(user)
             if (!user) continue
             switch (dataChange.field_name) {
                 case "activated":
@@ -74,8 +72,8 @@ class FreeIPAProvider extends SyncProvider {
             console.log(Object.keys(field_name_map).includes(dataChange.field_name))
             if(!Object.keys(field_name_map).includes(dataChange.field_name)) continue
             let partialObject = {}
-            partialObject[field_name_map[dataChange.ipa_uid]] = dataChange.new_value
-            console.log(field_name_map[dataChange.ipa_uid])
+            partialObject[field_name_map[dataChange.field_name]] = dataChange.new_value
+            console.log(field_name_map[dataChange.field_name])
             command([dataChange.ipa_uid], partialObject)
 
         }
