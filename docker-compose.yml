@@ -1,0 +1,7 @@
+services:
+  directusfreeipasyncer:
+    build: .
+    volumes:
+      - ./data:/srv/data
+    networks:
+      - directus_directus_internal
