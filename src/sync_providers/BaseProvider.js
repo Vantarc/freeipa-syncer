@@ -14,7 +14,7 @@ class SyncProvider {
     }
 
     async applyDiff(diff) {
-        this.currentData = Utils.applyChanges(this.currentData, diff)
+        Utils.applyChanges(this.currentData, diff)
     }
 
     getCurrentState() {
