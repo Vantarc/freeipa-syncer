@@ -1,5 +1,6 @@
 const SyncProvider = require("./BaseProvider");
 const ipa = require('node-freeipa')
+const credentials = require("../credentials")
 
 class FreeIPAProvider extends SyncProvider {
     constructor() {
@@ -7,8 +8,8 @@ class FreeIPAProvider extends SyncProvider {
         const opts = {
             server: "ipa.gatrobe.de",
             auth: {
-                user: '',
-                pass: ''
+                user: credentials.FREEIPA_USERNAME,
+                pass: credentials.FREEIPA_PASSWORD
             }
         };
 

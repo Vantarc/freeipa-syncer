@@ -1,9 +1,6 @@
 const SyncProvider = require("./BaseProvider");
 var d = require('@directus/sdk')
-
-const email = ""
-const password = ""
-
+const credentials = require("../credentials")
 
 class DirectusProvider extends SyncProvider {
     constructor(){
@@ -17,7 +14,7 @@ class DirectusProvider extends SyncProvider {
         console.log(diff)
 
         // login
-        await this.client.login(email, password);
+        await this.client.login(credentials.DIRECTUS_USERNAME, credentials.DIRECTUS_PASSWORD);
 
         for(let userAdded of diff.addedUsers){
             await this.client.request(d.createItem("Gatrobe_Users", userAdded))
