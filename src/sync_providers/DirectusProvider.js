@@ -63,7 +63,7 @@ class DirectusProvider extends SyncProvider {
     
     async updateCurrentState() {
         // login
-        await this.client.login(email, password);
+        await this.client.login(credentials.DIRECTUS_USERNAME, credentials.DIRECTUS_PASSWORD);
  
         this.currentData = await this.client.request(d.readItems("Gatrobe_Users", {}))
         this.currentData.forEach(user => {
