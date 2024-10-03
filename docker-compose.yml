@@ -5,3 +5,7 @@ services:
       - ./data:/srv/data
     networks:
       - directus_directus_internal
+
+networks:
+  directus_directus_internal:
+    external: true
