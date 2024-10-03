@@ -10,6 +10,7 @@ const app = express();
 app.post('/sync', (req, res) => {
     console.log("Sync triggered!")
     sync();
+    res.status(200).json({status:"ok"})
 })
 
 
