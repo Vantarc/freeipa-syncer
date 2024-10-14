@@ -1,6 +1,7 @@
 services:
   directusfreeipasyncer:
     build: .
+    restart: unless-stopped
     volumes:
       - ./data:/srv/data
     networks:

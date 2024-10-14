@@ -43,6 +43,7 @@ async function sync() {
     if(apply_freeipaDiff.diffCount + apply_directusDiff.diffCount > 0 || queuedRequest){
         queuedRequest = false
         console.log("Finished syncing, but started new iteration because changes were made!")
+        freeipa.logout()
         sync()
         return 
     }

@@ -18,6 +18,9 @@ class FreeIPAProvider extends SyncProvider {
         }).catch(error => {
         });
     }
+    async logout(){
+        await ipa.session_logout()
+    }
 
     async applyDiff(diff) {
         console.log("Syncing to " + this.name)
@@ -77,31 +80,27 @@ class FreeIPAProvider extends SyncProvider {
             command([dataChange.ipa_uid], partialObject)
 
         }
-        let directusGroupAdds = {}
         for (let groupAdded of diff.groupsAdded) {
-            let user = state.find(e => e.ipa_uid === groupAdded.ipa_uid)
+            let user = this.currentData.find(e => e.ipa_uid === groupAdded.ipa_uid)
             if (!user) continue
             if (user.groups.includes(groupAdded.group_cn)) { continue }
-            if (!directusGroupAdds[user.directus_id]) directusGroupAdds[user.directus_id] = []
-            directusGroupAdds[user.directus_id].push(groupAdded.group_cn)
+
+            await ipa.group_add_member([groupAdded.group_cn], { "user": user.ipa_uid})
         }
-        let directusGroupRemoves = {}
         for (let groupRemoved of diff.groupsRemoved) {
-            let user = state.find(e => e.ipa_uid === groupAdded.ipa_uid)
+            let user = this.currentData.find(e => e.ipa_uid === groupRemoved.ipa_uid)
             if (!user) continue
-            if (!user.groups.includes(groupAdded.group_cn)) { continue }
-            if (!directusGroupRemoves[user.directus_id]) directusGroupRemoves[user.directus_id] = []
-            directusGroupRemoves[user.ipa_uid].push(groupAdded.group_cn)
-        }
-        for (let ipa_uid in directusGroupAdds) {
-            let user = state.find(e => e.ipa_uid === ipa_uid)
-            await this.client.request(d.updateItem("Gatrobe_Users"), user.directus_id, { "groups": user.groups + directusGroupAdds[ipa_uid] })
+            if (!user.groups.includes(groupRemoved.group_cn)) { continue }
+
+            await ipa.group_remove_member([groupRemoved.group_cn], { "user": user.ipa_uid})
+
         }
         super.applyDiff(diff)
     }
     async updateCurrentState() {
         // get all users
         let users = await ipa.user_find()
+        console.log(users)
         let stagedUsers = await ipa.stageuser_find()
         if (!Array.isArray(stagedUsers)) stagedUsers = []
         // get all groups
