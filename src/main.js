@@ -54,6 +54,7 @@ async function sync() {
         
         directus.safeCurrentState()
         freeipa.safeCurrentState()
+        wikijs.safeCurrentState()
         currentlySyncing = false
 
         diffCount = apply_freeipaDiff.diffCount + apply_directusDiff.diffCount
