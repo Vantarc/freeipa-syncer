@@ -72,11 +72,9 @@ class FreeIPAProvider extends SyncProvider {
                 "givenname": "givenname",
                 "mail": "mail"
             }
-            console.log(Object.keys(field_name_map).includes(dataChange.field_name))
             if(!Object.keys(field_name_map).includes(dataChange.field_name)) continue
             let partialObject = {}
             partialObject[field_name_map[dataChange.field_name]] = dataChange.new_value
-            console.log(field_name_map[dataChange.field_name])
             command([dataChange.ipa_uid], partialObject)
 
         }
@@ -98,9 +96,9 @@ class FreeIPAProvider extends SyncProvider {
         super.applyDiff(diff)
     }
     async updateCurrentState() {
+        console.log("Updating state for " + this.name)
         // get all users
         let users = await ipa.user_find()
-        console.log(users)
         let stagedUsers = await ipa.stageuser_find()
         if (!Array.isArray(stagedUsers)) stagedUsers = []
         // get all groups

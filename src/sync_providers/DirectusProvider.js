@@ -63,6 +63,7 @@ class DirectusProvider extends SyncProvider {
     }
     
     async updateCurrentState() {
+        console.log("Updating state for " + this.name)
         // login
         await this.client.login(credentials.DIRECTUS_USERNAME, credentials.DIRECTUS_PASSWORD);
  

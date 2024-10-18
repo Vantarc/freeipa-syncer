@@ -10,7 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "@directus/sdk": "^17.0.1",
+    "@keycloak/keycloak-admin-client": "^26.0.0",
     "express": "^4.21.0",
-    "node-freeipa": "^2.4.0"
+    "node-freeipa": "^2.4.0",
+    "postman": "^0.2.0"
   }
 }
