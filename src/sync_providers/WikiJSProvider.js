@@ -38,13 +38,12 @@ class WikiJSProvider extends SyncProvider {
                     unassignUser(userId:USER_ID groupId:GROUP_ID) {responseResult {succeeded}}
                 }
             }`
-
     KEYCLOAK_PROVIDER_ID =  "41fe04e2-4732-4581-af19-8c738a387f5b"
-    SYNCED_GROUPS = ["anwaerter", "mitglied", "alumni"]
 
     constructor(){
         super("wikijs")
-        this.kc = new KeycloakHelper()        
+        this.kc = new KeycloakHelper()
+        this.SYNCED_GROUPS = []       
     }
 
     async applyDiff(diff) {
@@ -145,6 +144,7 @@ class WikiJSProvider extends SyncProvider {
         this.groupNameToIDMapping = {}
         for(let group of groups) {
             this.groupNameToIDMapping[group.name.toLowerCase()] = group.id
+            this.SYNCED_GROUPS.push(group.name.toLowerCase())
         }
     }
 
