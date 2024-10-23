@@ -119,6 +119,15 @@ class FreeIPAProvider extends SyncProvider {
         });
 
         stagedUsers.forEach(user => {
+            if(this.currentData.find((e)=> e.ipa_uid === user.uid[0])){
+                fetch("https://ntfy.gatrobe.de/users", {
+                    headers: {
+                      "prio": "high",
+                    },
+                    body: `Es gibt einen Konflik des Names von zwei Accounts! Der Accountname ${e.ipa_uid} wird von mehreren Accounts verwendet!`
+                  });
+                return
+            }
             this.currentData.push({
                 "ipa_uid": user.uid[0],
                 "givenname": user.givenname ? user.givenname[0] : null,
