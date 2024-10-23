@@ -121,6 +121,7 @@ class FreeIPAProvider extends SyncProvider {
         stagedUsers.forEach(user => {
             if(this.currentData.find((e)=> e.ipa_uid === user.uid[0])){
                 fetch("https://ntfy.gatrobe.de/users", {
+                    method: 'POST',
                     headers: {
                       "prio": "high",
                     },
