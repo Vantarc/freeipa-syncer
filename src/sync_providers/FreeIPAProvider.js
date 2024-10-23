@@ -124,7 +124,7 @@ class FreeIPAProvider extends SyncProvider {
                     headers: {
                       "prio": "high",
                     },
-                    body: `Es gibt einen Konflik des Names von zwei Accounts! Der Accountname ${e.ipa_uid} wird von mehreren Accounts verwendet!`
+                    body: `Es gibt einen Konflik des Names von zwei Accounts! Der Accountname ${user.uid[0]} wird von mehreren Accounts verwendet!`
                   });
                 return
             }
