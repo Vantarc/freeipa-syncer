@@ -1,4 +1,5 @@
-const DirectusProvider = require("./sync_providers/DirectusProvider")
+const DirectusProvider = require("./sync_providers/DirectusProvider");
+const DirectusUserProvider = require("./sync_providers/DirectusUserProvider");
 const FreeIPAProvider = require("./sync_providers/FreeIPAProvider");
 const WikiJSProvider = require("./sync_providers/WikiJSProvider");
 const utils = require("./utils")
@@ -7,6 +8,8 @@ const express = require('express');
 let currentlySyncing = false
 let queuedRequest = false
 const app = express();
+
+let DEBUG = false
 
 app.post('/sync', (req, res) => {
     console.log("Sync triggered!")
@@ -17,6 +20,7 @@ app.post('/sync', (req, res) => {
 
 async function sync() {
     let diffCount = 0
+    let freeipa;
     if(currentlySyncing){
         queuedRequest = true
         return
@@ -26,10 +30,13 @@ async function sync() {
         
 
         
-        var wikijs = new WikiJSProvider()
+        var wikijs = await WikiJSProvider.createInstance()
         
-        var directus = new DirectusProvider()
-        var freeipa = new FreeIPAProvider()
+        var directus = await DirectusProvider.createInstance()
+        freeipa = await FreeIPAProvider.createInstance()
+        var directus_user = await DirectusUserProvider.createInstance()
+
+        await directus_user.updateCurrentState()
         await directus.updateCurrentState()
         
         await freeipa.updateCurrentState()
@@ -39,8 +46,9 @@ async function sync() {
         let directus_diff = directus.calculateDiff()
         
         let masterState = freeipa.getCurrentState()
+
         // apply changes to masterState
-        utils.applyChanges(masterState, directus_diff.diff)
+        utils.applyChanges(masterState, directus_diff.diff)        
         
         let apply_directusDiff = directus.calculateDiffForNewData(masterState)
         await directus.applyDiff(apply_directusDiff.diff)
@@ -52,9 +60,14 @@ async function sync() {
         let apply_wikijs_diff = wikijs.calculateDiffForNewData(masterState)
         await wikijs.applyDiff(apply_wikijs_diff.diff)
         
+        let apply_directus_userDiff = directus_user.calculateDiffForNewData(masterState)
+        await directus_user.applyDiff(apply_directus_userDiff.diff)
+        
         directus.safeCurrentState()
         freeipa.safeCurrentState()
         wikijs.safeCurrentState()
+        directus_user.safeCurrentState()
+
         currentlySyncing = false
 
         diffCount = apply_freeipaDiff.diffCount + apply_directusDiff.diffCount
@@ -67,6 +80,7 @@ async function sync() {
         queuedRequest = false
         console.log("Finished syncing, but started new iteration because changes were made!")
         freeipa.logout()
+        currentlySyncing = false
         sync()
         return 
     }
@@ -74,9 +88,13 @@ async function sync() {
     freeipa.logout()
 
 }
-//sync().then(() => {process.exit(1)})
-app.listen(3000, () => {
-    setInterval(sync, 1000 * 60 * 10)
-    console.log('server listening on port 3000')
-
-})
+if(DEBUG){
+    sync().then(() => {process.exit(1)})
+} else{
+    app.listen(3000, () => {
+        setInterval(sync, 1000 * 60 * 10)
+        console.log('server listening on port 3000')
+    
+    })
+    
+}

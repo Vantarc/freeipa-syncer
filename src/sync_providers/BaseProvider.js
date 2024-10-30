@@ -9,6 +9,14 @@ class SyncProvider {
         this.USER_DATA_LIST = ["givenname", "lastname", "gidnumber", "mail", "activated", "accepted"]
     }
 
+    static async createInstance(name){
+        let instance = new this(name)
+        await instance.init()
+        return instance
+    }
+
+    async init(){}
+
     calculateDiffForNewData(newData) {
         return Utils.calculateDiff(newData, this.currentData, this.USER_DATA_LIST)
     }

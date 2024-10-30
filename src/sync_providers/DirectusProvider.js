@@ -1,20 +1,20 @@
 const SyncProvider = require("./BaseProvider");
 var d = require('@directus/sdk')
-const credentials = require("../credentials")
+const DirectusHelper = require("../DirectusHelper");
 
 class DirectusProvider extends SyncProvider {
     constructor(){
         super("directus")
-        this.client = d.createDirectus('https://cms.gatrobe.de').with(d.authentication()).with(d.rest());
-        
+    }
+
+    async init(){
+        super.init()
+        this.client = await DirectusHelper.getDirectusClient()
     }
 
     async applyDiff(diff) {
         console.log("Syncing to " + this.name)
         console.log(diff)
-
-        // login
-        await this.client.login(credentials.DIRECTUS_USERNAME, credentials.DIRECTUS_PASSWORD);
 
         for(let userAdded of diff.addedUsers){
             await this.client.request(d.createItem("Gatrobe_Users", userAdded))
@@ -64,9 +64,7 @@ class DirectusProvider extends SyncProvider {
     
     async updateCurrentState() {
         console.log("Updating state for " + this.name)
-        // login
-        await this.client.login(credentials.DIRECTUS_USERNAME, credentials.DIRECTUS_PASSWORD);
- 
+
         this.currentData = await this.client.request(d.readItems("Gatrobe_Users", {}))
         this.currentData.forEach(user => {
             if(!user.groups) user.groups = []
