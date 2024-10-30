@@ -10,7 +10,7 @@ let currentlySyncing = false
 let queuedRequest = false
 const app = express();
 
-let DEBUG = true
+let DEBUG = false
 
 app.post('/sync', (req, res) => {
     console.log("Sync triggered!")
@@ -38,44 +38,45 @@ async function sync() {
         var directus_user = await DirectusUserProvider.createInstance()
         var google = await GoogleCloudProvider.createInstance()
         await google.updateCurrentState()
-        //await directus_user.updateCurrentState()
-        //await directus.updateCurrentState()
+        await directus_user.updateCurrentState()
+        await directus.updateCurrentState()
         
         
         await freeipa.updateCurrentState()
         
-        //await wikijs.updateCurrentState()
+        await wikijs.updateCurrentState()
         
-        //let directus_diff = directus.calculateDiff()
+        let directus_diff = directus.calculateDiff()
         
         let masterState = freeipa.getCurrentState()
 
         // apply changes to masterState
-        //utils.applyChanges(masterState, directus_diff.diff)        
+        utils.applyChanges(masterState, directus_diff.diff)        
         
-        //let apply_directusDiff = directus.calculateDiffForNewData(masterState)
-        //await directus.applyDiff(apply_directusDiff.diff)
+        let apply_directusDiff = directus.calculateDiffForNewData(masterState)
+        await directus.applyDiff(apply_directusDiff.diff)
         
         let googleDiff = google.calculateDiffForNewData(masterState)
         await google.applyDiff(googleDiff.diff)
 
-        //let apply_freeipaDiff =  freeipa.calculateDiffForNewData(masterState)
-        //await freeipa.applyDiff(apply_freeipaDiff.diff)
+        let apply_freeipaDiff =  freeipa.calculateDiffForNewData(masterState)
+        await freeipa.applyDiff(apply_freeipaDiff.diff)
         
-        //let apply_wikijs_diff = wikijs.calculateDiffForNewData(masterState)
-        //await wikijs.applyDiff(apply_wikijs_diff.diff)
+        let apply_wikijs_diff = wikijs.calculateDiffForNewData(masterState)
+        await wikijs.applyDiff(apply_wikijs_diff.diff)
         
-        //let apply_directus_userDiff = directus_user.calculateDiffForNewData(masterState)
-        //await directus_user.applyDiff(apply_directus_userDiff.diff)
+        let apply_directus_userDiff = directus_user.calculateDiffForNewData(masterState)
+        await directus_user.applyDiff(apply_directus_userDiff.diff)
         
-        //directus.safeCurrentState()
-        // freeipa.safeCurrentState()
-        // wikijs.safeCurrentState()
-        // directus_user.safeCurrentState()
+        directus.safeCurrentState()
+        freeipa.safeCurrentState()
+        wikijs.safeCurrentState()
+        directus_user.safeCurrentState()
+        google.safeCurrentState()
 
         currentlySyncing = false
 
-        //diffCount = apply_freeipaDiff.diffCount + apply_directusDiff.diffCount
+        diffCount = apply_freeipaDiff.diffCount + apply_directusDiff.diffCount
     } catch (error) {
         console.log("An error occured while syncing! Trying again!")
         console.error(error)
