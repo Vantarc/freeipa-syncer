@@ -37,13 +37,11 @@ async function sync() {
         freeipa = await FreeIPAProvider.createInstance()
         var directus_user = await DirectusUserProvider.createInstance()
         var google = await GoogleCloudProvider.createInstance()
+        
+        await freeipa.updateCurrentState()
         await google.updateCurrentState()
         await directus_user.updateCurrentState()
         await directus.updateCurrentState()
-        
-        
-        await freeipa.updateCurrentState()
-        
         await wikijs.updateCurrentState()
         
         let directus_diff = directus.calculateDiff()

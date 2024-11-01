@@ -10,7 +10,9 @@ class FreeIPAProvider extends SyncProvider {
             auth: {
                 user: credentials.FREEIPA_USERNAME,
                 pass: credentials.FREEIPA_PASSWORD
-            }
+            },
+            cacheFolder: "./credentials/",
+            expires: 60
         };
 
         ipa.configure(opts);
