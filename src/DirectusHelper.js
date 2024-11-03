@@ -13,6 +13,10 @@ class DirectusHelper {
         return DirectusHelper.client
     }
 
+    static destroyClient(){
+        DirectusHelper.client = undefined;
+    }
+
     
     static destroyClient(){ 
         

@@ -62,7 +62,6 @@ class GoogleCloudProvider extends SyncProvider {
                 "groups": []
             })
         })
-        console.log(this.currentData)
     }
 }
 

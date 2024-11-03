@@ -1,3 +1,4 @@
+const DirectusHelper = require("./DirectusHelper");
 const DirectusProvider = require("./sync_providers/DirectusProvider");
 const DirectusUserProvider = require("./sync_providers/DirectusUserProvider");
 const FreeIPAProvider = require("./sync_providers/FreeIPAProvider");
@@ -80,6 +81,8 @@ async function sync() {
         console.error(error)
         queuedRequest = true
     }
+    freeipa.logout()
+    DirectusHelper.destroyClient()
     if(diffCount > 0 || queuedRequest){
         queuedRequest = false
         console.log("Finished syncing, but started new iteration because changes were made!")
@@ -89,7 +92,6 @@ async function sync() {
         return 
     }
     console.log("Finished syncing")
-    freeipa.logout()
 
 }
 if(DEBUG){
