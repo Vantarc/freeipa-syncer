@@ -16,11 +16,6 @@ class DirectusHelper {
     static destroyClient(){
         DirectusHelper.client = undefined;
     }
-
-    
-    static destroyClient(){ 
-        
-    }
 }
 
 
