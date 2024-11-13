@@ -5,6 +5,7 @@ const DirectusHelper = require("../DirectusHelper");
 class DirectusProvider extends SyncProvider {
     constructor(){
         super("directus")
+        this.role_to_group_map = {"member": "mitglied", "contender": "anwaerter", "alumni": "alumni"}
     }
 
     async init(){
@@ -66,8 +67,14 @@ class DirectusProvider extends SyncProvider {
         console.log("Updating state for " + this.name)
 
         this.currentData = await this.client.request(d.readItems("Gatrobe_Users", {}))
+        console.log(this.currentData)
         this.currentData.forEach(user => {
             if(!user.groups) user.groups = []
+            if(!user.accepted) return
+            user.groups = user.groups.filter(i => !Object.values(this.role_to_group_map).includes(i))
+            if(user.Role) {
+                user.groups.push(this.role_to_group_map[user.Role])
+            }
         });
     }
 }
