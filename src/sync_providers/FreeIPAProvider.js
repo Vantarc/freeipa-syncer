@@ -19,6 +19,13 @@ class FreeIPAProvider extends SyncProvider {
         ipa.json_metadata().then(result => {
         }).catch(error => {
         });
+        this.USER_DATA_LIST.push("Studiengang")
+        this.USER_DATA_LIST.push("Postleitzahl")
+        this.USER_DATA_LIST.push("Ort")
+        this.USER_DATA_LIST.push("Strasse")
+        this.USER_DATA_LIST.push("Telefonnummer")
+        this.USER_DATA_LIST.push("Geburtstag")
+
     }
     async logout(){
         await ipa.session_logout()
@@ -72,13 +79,22 @@ class FreeIPAProvider extends SyncProvider {
             let field_name_map = {
                 "lastname":"sn",
                 "givenname": "givenname",
-                "mail": "mail"
+                "mail": "mail",
+                "Geburtstag": "carlicense",
+                "Telefonnummer": "telephonenumber",
+                "Strasse": "street",
+                "Ort": "l",
+                "Postleitzahl": "postalcode",
+                "Studiengang": "userclass",
             }
+            console.log(dataChange)
             if(!Object.keys(field_name_map).includes(dataChange.field_name)) continue
             let partialObject = {}
             partialObject[field_name_map[dataChange.field_name]] = dataChange.new_value
-            command([dataChange.ipa_uid], partialObject)
+            console.log(partialObject)
 
+            let log = await command([dataChange.ipa_uid], partialObject)
+            console.log(log)
         }
         for (let groupAdded of diff.groupsAdded) {
             let user = this.currentData.find(e => e.ipa_uid === groupAdded.ipa_uid)
@@ -100,8 +116,8 @@ class FreeIPAProvider extends SyncProvider {
     async updateCurrentState() {
         console.log("Updating state for " + this.name)
         // get all users
-        let users = await ipa.user_find()
-        let stagedUsers = await ipa.stageuser_find()
+        let users = await ipa.user_find(undefined, { "all": true})
+        let stagedUsers = await ipa.stageuser_find(undefined, { "all": true})
         if (!Array.isArray(stagedUsers)) stagedUsers = []
         // get all groups
         let groups = await ipa.group_find()
@@ -116,7 +132,14 @@ class FreeIPAProvider extends SyncProvider {
                 "mail": user.mail ? user.mail : [],
                 "activated": !user.nsaccountlock,
                 "accepted": true,
-                "groups": []
+                "groups": [],
+                "Geburtstag": user.carlicense ? user.carlicense[0] : null,
+                "Telefonnummer": user.telephonenumber ? user.telephonenumber[0] : null, 
+                "Strasse": user.street ? user.street[0] : null,
+                "Ort": user.l ? user.l[0] : null,
+                "Postleitzahl": user.postalcode ? user.postalcode[0] : null,
+                "Studiengang": user.userclass ? user.userclass[0] : null,
+                
             })
         });
 
@@ -131,6 +154,7 @@ class FreeIPAProvider extends SyncProvider {
                   });
                 return
             }
+            console.log(user.carlicense)
             this.currentData.push({
                 "ipa_uid": user.uid[0],
                 "givenname": user.givenname ? user.givenname[0] : null,
@@ -139,7 +163,14 @@ class FreeIPAProvider extends SyncProvider {
                 "mail": user.mail ? user.mail : [],
                 "activated": !user.nsaccountlock,
                 "accepted": false,
-                "groups": []
+                "groups": [],
+                "Geburtstag": user.carlicense ? user.carlicense[0] : null,
+                "Telefonnummer": user.telephonenumber ? user.telephonenumber[0] : null, 
+                "Strasse": user.street ? user.street[0] : null,
+                "Ort": user.l ? user.l[0] : null,
+                "Postleitzahl": user.postalcode ? user.postalcode[0] : null,
+                "Studiengang": user.userclass ? user.userclass[0] : null,
+
             })
         });
         for (const group of groups) {

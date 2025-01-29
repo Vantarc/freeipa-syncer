@@ -13,6 +13,13 @@ class DirectusProvider extends SyncProvider {
             "einkaufswart": "shopdb_admin",
             "shopdbwart": "shopdb_admin"
         }
+        this.USER_DATA_LIST.push("Studiengang")
+        this.USER_DATA_LIST.push("Postleitzahl")
+        this.USER_DATA_LIST.push("Ort")
+        this.USER_DATA_LIST.push("Strasse")
+        this.USER_DATA_LIST.push("Telefonnummer")
+        this.USER_DATA_LIST.push("Geburtstag")
+
 
     }
 

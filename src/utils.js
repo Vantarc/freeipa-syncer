@@ -68,7 +68,13 @@ function calculateDiff(newState, oldState, field_names) {
 
         let userInLastData = oldState.find(e => e.ipa_uid === user.ipa_uid)
         for (let field_name of field_names) {
-            if (!(user[field_name] === userInLastData[field_name])) {
+            compare = false
+            if((Array.isArray(user[field_name]))) {
+                compare = Array.toString(user[field_name]) === Array.toString(userInLastData[field_name]) 
+            } else {
+                compare = user[field_name] === userInLastData[field_name]
+            }
+            if (!compare) {
                 diff.dataChange.push({
                     "ipa_uid": user.ipa_uid,
                     "field_name": field_name,
@@ -101,4 +107,29 @@ function calculateDiff(newState, oldState, field_names) {
 
 }
 
-module.exports = {calculateDiff, applyChanges}
+function convertMembersToCSV(members) {
+    let csv = "Vorname;Nachname;Rang;E-Mail;Adresse;Anwärter seit; Mitglied seit; Vereinsmitglied seit; Ehemalig seit; Amt; Studiengang; Geburtstag; Telefonnummer\n"
+    console.log(members)
+    roleMapping = {
+        "member": "Mitglied",
+        "contender": "Anwärter",
+        "alumni": "Alumni"
+
+    }
+    for (let member of members) {
+        if(member.sysuser) continue
+        let mail = []
+        member.mail.forEach(element => {
+            if(!element.includes("@gatrobe.de")) mail.push(element)
+        });
+        console.log(member.amt)
+        csv += member.givenname + ";" +  member.lastname + ";" + roleMapping[member.Role] + ";\"" + mail + "\";\"" + member.strasse + ", " + member.Postleitzahl + " " + member.Ort + "\";" + member.Anwaerter + ";" + member.Mitglied + ";" + member.Vereinsmitglied + ";" + member.Ehemalig + ";" + member.amt + ";" + member.Studiengang + ";" + member.Geburtstag + ";" + member.Telefonnummer + "\n"
+    }
+    csv = csv.replaceAll("null", "")
+    csv = csv.replaceAll("undefined,", "")
+    csv = csv.replaceAll("undefined", "")
+
+    return csv
+}
+
+module.exports = {calculateDiff, applyChanges, convertMembersToCSV}

@@ -19,6 +19,25 @@ app.post('/sync', (req, res) => {
     res.status(200).json({status:"ok"})
 })
 
+app.post('/generateMemberlist', (req, res) => {
+    console.log("Generating Memberlist!")
+    uploadMemberList();
+    res.status(200).json({status:"ok"})
+})
+
+async function uploadMemberList() {
+    // get all elements from directus and convert them to a csv file which is then uploaded to directus as file
+    let directus = await DirectusProvider.createInstance()
+    DirectusHelper.getDirectusClient()
+    await directus.updateCurrentState()
+    let members = directus.getCurrentState()
+    let csv = utils.convertMembersToCSV(members)
+    // create filename based on time
+    let filename = "mitglieder_" + new Date().toISOString() + ".csv"
+    let file = await DirectusHelper.uploadCSV(filename,csv)
+    DirectusHelper.destroyClient()
+}
+
 
 async function sync() {
     let diffCount = 0
@@ -53,12 +72,14 @@ async function sync() {
         utils.applyChanges(masterState, directus_diff.diff)        
         
         let apply_directusDiff = directus.calculateDiffForNewData(masterState)
+        console.log(apply_directusDiff.diff)
         await directus.applyDiff(apply_directusDiff.diff)
         
         let googleDiff = google.calculateDiffForNewData(masterState)
         await google.applyDiff(googleDiff.diff)
 
         let apply_freeipaDiff =  freeipa.calculateDiffForNewData(masterState)
+        console.log(apply_freeipaDiff.diff)
         await freeipa.applyDiff(apply_freeipaDiff.diff)
         
         let apply_wikijs_diff = wikijs.calculateDiffForNewData(masterState)
@@ -94,6 +115,8 @@ async function sync() {
     console.log("Finished syncing")
 
 }
+
+
 if(DEBUG){
     sync().then(() => {process.exit(1)})
 } else{
