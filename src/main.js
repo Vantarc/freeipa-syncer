@@ -26,16 +26,21 @@ app.post('/generateMemberlist', (req, res) => {
 })
 
 async function uploadMemberList() {
-    // get all elements from directus and convert them to a csv file which is then uploaded to directus as file
-    let directus = await DirectusProvider.createInstance()
-    DirectusHelper.getDirectusClient()
-    await directus.updateCurrentState()
-    let members = directus.getCurrentState()
-    let csv = utils.convertMembersToCSV(members)
-    // create filename based on time
-    let filename = "mitglieder_" + new Date().toISOString() + ".csv"
-    let file = await DirectusHelper.uploadCSV(filename,csv)
-    DirectusHelper.destroyClient()
+    try {
+        // get all elements from directus and convert them to a csv file which is then uploaded to directus as file
+        let directus = await DirectusProvider.createInstance()
+        DirectusHelper.getDirectusClient()
+        await directus.updateCurrentState()
+        let members = directus.getCurrentState()
+        let csv = utils.convertMembersToCSV(members)
+        // create filename based on on date and time in human readable format in the form of "20.01.2021_12:00"
+        let date = new Date()
+        let filename = "Mitglieder_" + date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + "_" + date.getHours() + ":" + date.getMinutes()
+        await DirectusHelper.uploadCSV(filename,csv)
+        DirectusHelper.destroyClient()
+    } catch (error) {
+        await uploadMemberList()    
+    }
 }
 
 
@@ -72,14 +77,12 @@ async function sync() {
         utils.applyChanges(masterState, directus_diff.diff)        
         
         let apply_directusDiff = directus.calculateDiffForNewData(masterState)
-        console.log(apply_directusDiff.diff)
         await directus.applyDiff(apply_directusDiff.diff)
         
         let googleDiff = google.calculateDiffForNewData(masterState)
         await google.applyDiff(googleDiff.diff)
 
         let apply_freeipaDiff =  freeipa.calculateDiffForNewData(masterState)
-        console.log(apply_freeipaDiff.diff)
         await freeipa.applyDiff(apply_freeipaDiff.diff)
         
         let apply_wikijs_diff = wikijs.calculateDiffForNewData(masterState)

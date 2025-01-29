@@ -109,7 +109,6 @@ function calculateDiff(newState, oldState, field_names) {
 
 function convertMembersToCSV(members) {
     let csv = "Vorname;Nachname;Rang;E-Mail;Adresse;Anwärter seit; Mitglied seit; Vereinsmitglied seit; Ehemalig seit; Amt; Studiengang; Geburtstag; Telefonnummer\n"
-    console.log(members)
     roleMapping = {
         "member": "Mitglied",
         "contender": "Anwärter",
@@ -122,7 +121,6 @@ function convertMembersToCSV(members) {
         member.mail.forEach(element => {
             if(!element.includes("@gatrobe.de")) mail.push(element)
         });
-        console.log(member.amt)
         csv += member.givenname + ";" +  member.lastname + ";" + roleMapping[member.Role] + ";\"" + mail + "\";\"" + member.strasse + ", " + member.Postleitzahl + " " + member.Ort + "\";" + member.Anwaerter + ";" + member.Mitglied + ";" + member.Vereinsmitglied + ";" + member.Ehemalig + ";" + member.amt + ";" + member.Studiengang + ";" + member.Geburtstag + ";" + member.Telefonnummer + "\n"
     }
     csv = csv.replaceAll("null", "")

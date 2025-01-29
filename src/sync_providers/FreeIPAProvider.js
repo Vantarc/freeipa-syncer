@@ -87,14 +87,11 @@ class FreeIPAProvider extends SyncProvider {
                 "Postleitzahl": "postalcode",
                 "Studiengang": "userclass",
             }
-            console.log(dataChange)
             if(!Object.keys(field_name_map).includes(dataChange.field_name)) continue
             let partialObject = {}
             partialObject[field_name_map[dataChange.field_name]] = dataChange.new_value
-            console.log(partialObject)
 
             let log = await command([dataChange.ipa_uid], partialObject)
-            console.log(log)
         }
         for (let groupAdded of diff.groupsAdded) {
             let user = this.currentData.find(e => e.ipa_uid === groupAdded.ipa_uid)
@@ -154,7 +151,6 @@ class FreeIPAProvider extends SyncProvider {
                   });
                 return
             }
-            console.log(user.carlicense)
             this.currentData.push({
                 "ipa_uid": user.uid[0],
                 "givenname": user.givenname ? user.givenname[0] : null,

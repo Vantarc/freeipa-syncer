@@ -20,13 +20,11 @@ class DirectusHelper {
 
     static async uploadCSV(fileName, csv){ 
         const file = new Blob([csv], { type: 'text/plain' });
-        const result = await this.client.request(d.readFolders());
         const formData = new FormData();
         formData.append('title', fileName);
         formData.append('file', file, fileName);
  
         let fileID =  await this.client.request(d.uploadFiles(formData)).catch(e => console.log(e))
-        console.log(fileID.id)
         await this.client.request(d.updateFile(fileID.id, { folder: 'b2f8bdb1-1384-4e29-b9cf-ac72df94b2c9' }));
 
 
