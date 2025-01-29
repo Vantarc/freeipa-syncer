@@ -113,7 +113,7 @@ class FreeIPAProvider extends SyncProvider {
                 "givenname": user.givenname ? user.givenname[0] : null,
                 "lastname": user.sn[0],
                 "gidnumber": user.uidnumber[0],
-                "mail": user.mail ? user.mail[0] : null,
+                "mail": user.mail ? user.mail : [],
                 "activated": !user.nsaccountlock,
                 "accepted": true,
                 "groups": []
@@ -136,7 +136,7 @@ class FreeIPAProvider extends SyncProvider {
                 "givenname": user.givenname ? user.givenname[0] : null,
                 "lastname": user.sn[0],
                 "gidnumber": user.uidnumber[0],
-                "mail": user.mail ? user.mail[0] : null,
+                "mail": user.mail ? user.mail : [],
                 "activated": !user.nsaccountlock,
                 "accepted": false,
                 "groups": []

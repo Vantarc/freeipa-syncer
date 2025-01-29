@@ -41,7 +41,7 @@ class GoogleCloudProvider extends SyncProvider {
         let newaddedUsers = []
         for(let userAdd of changes.diff.addedUsers) {
             if(!userAdd.accepted) continue
-            if(userAdd.groups.includes("sysuser")) continue
+            if(userAdd.groups.includes("sysuser") && !userAdd.groups.includes("googleworkspace")) continue
 
             newaddedUsers.push(userAdd)
         }
