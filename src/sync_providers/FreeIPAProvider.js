@@ -177,7 +177,7 @@ class FreeIPAProvider extends SyncProvider {
                 this.currentData.find(ele => ele.ipa_uid === user_uid).groups.push(data.cn[0])
             })
         };
-
+        console.log(this.currentData)
 
     }
 }

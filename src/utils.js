@@ -121,7 +121,7 @@ function convertMembersToCSV(members) {
         member.mail.forEach(element => {
             if(!element.includes("@gatrobe.de")) mail.push(element)
         });
-        csv += member.givenname + ";" +  member.lastname + ";" + roleMapping[member.Role] + ";\"" + mail + "\";\"" + member.strasse + ", " + member.Postleitzahl + " " + member.Ort + "\";" + member.Anwaerter + ";" + member.Mitglied + ";" + member.Vereinsmitglied + ";" + member.Ehemalig + ";" + member.amt + ";" + member.Studiengang + ";" + member.Geburtstag + ";" + member.Telefonnummer + "\n"
+        csv += member.givenname + ";" +  member.lastname + ";" + roleMapping[member.Role] + ";\"" + mail + "\";\"" + member.strasse + ", " + member.Postleitzahl + " " + member.Ort + "\";" + member.contenter_since + ";" + member.member_since + ";" + member.club_member_since + ";" + member.alumni_since + ";" + member.amt + ";" + member.Studiengang + ";" + member.Geburtstag + ";" + member.Telefonnummer + "\n"
     }
     csv = csv.replaceAll("null", "")
     csv = csv.replaceAll("undefined,", "")

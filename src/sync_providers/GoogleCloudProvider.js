@@ -21,7 +21,8 @@ class GoogleCloudProvider extends SyncProvider {
     async applyDiff(diff) {
         
         console.log("Syncing to " + this.name)
-        
+        console.log(diff)
+
         for(let userAdded of diff.addedUsers){
             await this.googleAPIWrapper.addUser(userAdded.givenname, userAdded.lastname, userAdded.ipa_uid + "@gatrobe.de", userAdded.ipa_uid)
         }
@@ -41,6 +42,7 @@ class GoogleCloudProvider extends SyncProvider {
         let newaddedUsers = []
         for(let userAdd of changes.diff.addedUsers) {
             if(!userAdd.accepted) continue
+            console.log(userAdd.groups)
             if(userAdd.groups.includes("sysuser") && !userAdd.groups.includes("googleworkspace")) continue
 
             newaddedUsers.push(userAdd)

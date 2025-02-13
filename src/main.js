@@ -35,7 +35,7 @@ async function uploadMemberList() {
         let csv = utils.convertMembersToCSV(members)
         // create filename based on on date and time in human readable format in the form of "20.01.2021_12:00"
         let date = new Date()
-        let filename = "Mitglieder_" + date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + "_" + date.getHours() + ":" + date.getMinutes()
+        let filename = "Mitglieder_" + date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear() + "_" + date.getHours() + ":" + date.getMinutes() + ".csv"
         await DirectusHelper.uploadCSV(filename,csv)
         DirectusHelper.destroyClient()
     } catch (error) {
